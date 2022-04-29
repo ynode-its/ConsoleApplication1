@@ -20,7 +20,7 @@
 
 #include "xprintf.h"
 
-#define SZB_OUTPUT	32
+#define SZB_OUTPUT	50
 
 
 #if XF_USE_OUTPUT
@@ -80,6 +80,65 @@ static double i10x (int n)	/* Calculate 10^n */
 	return rv;
 }
 
+static void ftoa1(
+	char* buf,	/* Buffer to output the generated string */
+	double val,	/* Real number to output */
+	int prec,	/* Number of fractinal digits */
+	char fmt	/* Notation */
+)
+{
+	int d;
+	int e = 0, m = 0, mm = 0;
+	char sign = 0;
+	double w;
+	double fd;
+
+
+	if (isnan(val))
+	{
+		return;
+	}
+	if (isinf(val))
+	{
+		return;
+	}
+
+	if (val < 0)
+	{
+		val = -val;
+		*buf++ = '-';
+	}
+
+	m = ilog10(val);
+
+	if (m < 0)
+		m = 0;
+	if (m + 26 + 3 >= SZB_OUTPUT)
+	{
+		return;
+	}
+	mm = m;
+	do
+	{
+		w = i10x(m);
+		d = val / w;
+		fd = d * w;
+		val -= fd;
+		*buf++ = '0' + d;
+	} while (--m > -1);
+	*buf++ = XF_DPC;
+
+	while (m >= -26)
+	{
+		val *= 10;
+		d = val;
+		val -= d;
+		*buf++ = '0' + d;
+		m--;
+	}
+
+	*buf = 0;	/* Term */
+}
 
 static void ftoa (
 	char* buf,	/* Buffer to output the generated string */
@@ -131,10 +190,6 @@ static void ftoa (
 				w = i10x(m);				/* Snip the highest digit d */
 				d = val / w;
 				double fd = d * w;
-				if (m == -1)
-				{
-					//fd *= (1 + 2.2204460492503131e-016);
-				}
 				val = val - fd;
 				if (m == -1) *buf++ = XF_DPC;	/* Insert a decimal separarot if get into fractional part */
 				*buf++ = '0' + d;			/* Put the digit */
@@ -330,7 +385,7 @@ static void xvfprintf (
 		case 'f':					/* Float (decimal) */
 		case 'e':					/* Float (e) */
 		case 'E':					/* Float (E) */
-			ftoa(p = str, va_arg(arp, double), prec, c);	/* Make fp string */
+			ftoa1(p = str, va_arg(arp, double), prec, c);	/* Make fp string */
 			for (j = strlen(p); !(f & 2) && j < w; j++) xfputc(func, pad);	/* Left pads */
 			while (*p) xfputc(func, *p++);		/* Value */
 			while (j++ < w) xfputc(func, ' ');	/* Right pads */
