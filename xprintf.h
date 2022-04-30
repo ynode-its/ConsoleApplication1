@@ -6,10 +6,10 @@ extern "C"
 {
 #endif // __cplusplus
 
-#define SZB_OUTPUT	50
+#define SZB_OUTPUT	350
 
 	int f16toa(double d);
-
+	void xprintf(const char* fmt, ...);
 #ifdef __cplusplus
 }
 #endif // __cplusplus
