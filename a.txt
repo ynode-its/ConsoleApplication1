@@ -1,0 +1,51 @@
+Sub フォントの種類を探す()
+ 
+　Dim myFont(1 To 2) As String
+　Dim myFontInUse As String
+　Dim aFont As Variant
+　Dim i As Integer
+　
+　On Error GoTo Name_Check_Error
+　
+　'標準スタイルのフォント確認
+　With ActiveDocument.Styles(wdStyleNormal).Font
+　　myFont(1) = .NameFarEast '日本語のフォント
+　　myFont(2) = .NameAscii '英数字のフォント
+　End With
+　
+　For i = 1 To 2
+　　myFontInUse = myFontInUse & vbCr & "　 " & myFont(i) & "（標準）"
+　Next i
+　
+　
+　For Each aFont In FontNames
+　
+　　If aFont = myFont(1) Or aFont = myFont(2) Then
+　　　GoTo NextFont
+　　End If
+　　
+　　With ActiveDocument.Content.Find
+　　　.ClearFormatting
+　　　.Text = ""
+　　　.Font.Name = aFont
+　　　.Execute Format:=True
+　　　If .Found = True Then
+　　　　myFontInUse = myFontInUse & vbCr & "　 " & aFont
+　　　End If
+　　End With
+　　
+NextFont:
+　
+　Next aFont
+　
+　MsgBox "この文書では" & myFontInUse & vbCr & "が使われています。", _
+　　　　　vbInformation, "使用中のフォントの種類"
+　
+　On Error GoTo 0
+　Exit Sub
+　
+Name_Check_Error:
+　
+　MsgBox "エラーが発生しました。終了します。"
+ 
+End Sub
