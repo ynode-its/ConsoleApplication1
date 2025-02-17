@@ -1,0 +1,13 @@
+copy /B repository.001 + repository.002 repository.zip
+copy /B repository.zip + repository.003 repository.zip
+copy /B repository.zip + repository.004 repository.zip
+copy /B repository.zip + repository.005 repository.zip
+copy /B repository.zip + repository.006 repository.zip
+copy /B repository.zip + repository.007 repository.zip
+copy /B repository.zip + repository.008 repository.zip
+copy /B repository.zip + repository.009 repository.zip
+copy /B repository.zip + repository.010 repository.zip
+copy /B repository.zip + repository.011 repository.zip
+copy /B repository.zip + repository.012 repository.zip
+copy /B repository.zip + repository.013 repository.zip
+copy /B repository.zip + repository.014 repository.zip
